@@ -5,7 +5,7 @@ char i;
 
 
 char word[] = "Hello ";
-for (i =5 ; i>=0 ; i-- ){
+for (i =4 ; i>=0 ; i-- ){
     printf("%c\n", word[i]);
 }
 printf("%c\n", word[7] );
