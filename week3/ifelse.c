@@ -5,7 +5,6 @@ int main() {
     //Checking that the value is over 60 for 2:1
     //Check the value is over 70 for a first 
     //Check that the value is a valid mark (between 0 and 100, inclusive)
-
     
     printf ("Enter the mark: \n");
     scanf ("%d", &mark);
