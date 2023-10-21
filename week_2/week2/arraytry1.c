@@ -8,7 +8,7 @@ char word[] = "Hello ";
 for (i =4 ; i>=0 ; i-- ){
     printf("%c\n", word[i]);
 }
-printf("%c\n", word[7] );
+printf("%c\n", word[5] );
 
 
 }
