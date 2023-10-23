@@ -18,17 +18,16 @@ int main() {
     int numbers[1000];
 
     //to count number of lines
-    int line_number_something =0 ;
+    int line_number_counting =0 ;
 
     //"while there is still data/stuff  in the file, "
     //gonna read 100 characters into line buffer
     //the fgets reads a line from of a text from a file and store them into 'buffer...'
     while (fgets(line_buffer, buffer_size, file) != NULL) 
     {
-        printf("%d\n", atoi(line_buffer));
+        printf("%s\n", line_buffer);
         //store them into an array
-        numbers[line_number_something]= atoi(line_buffer);
-        line_number_something++;
+        line_number_counting++;
     }
     //to count the number of lines
     printf("There were %d lines\n", line_number_something);
