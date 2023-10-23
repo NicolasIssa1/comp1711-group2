@@ -11,21 +11,24 @@ int main()
         printf("Error opening file\n");
         return 1;
     }
-    char str[10];
-    scanf("%s", str1);
+    int num_lines = 10;
+    char str1[10];
+    scanf("%s\n", str1);
     //to convert number to string
     num_lines = atoi(str1);
     int total =0;
+    
     float mean;
 
     char string[100];
 
-    printf("Type %d numbers: ", num_lines);
+    printf("Type %d numbers:\n", num_lines);
     
     for (int i = 0; i < num_lines; i++)
     {
         scanf("%s", string);
         fprintf(file, "%s\n", string);
+        
     }
 
     fclose(file);

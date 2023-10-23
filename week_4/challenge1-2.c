@@ -1,6 +1,5 @@
 // challenge 1: ask the user to pick how many numbers to enter
-//then calculate the mean of the numbers and write this as the final line
-// of the file
+//then calculate the mean of the numbers and write this as the final line of the file
 #include <stdio.h>
 
 int main()
@@ -17,11 +16,11 @@ int main()
     int number;
     int total;
     int mean;
-    printf("how many numbers do you want to wirte?");
+    printf("how many numbers do you want to wirte?\n");
     int num_lines = 10;
     scanf("%d", &num_lines);
 
-    printf("Type %d numbers: ", num_lines);
+    printf("Type %d numbers:\n", num_lines);
     
     for (int i = 0; i < num_lines; i++)
     {
@@ -30,7 +29,6 @@ int main()
         //to write to a file, it is fprintf
         fprintf(file, "%d\n", number);
     }
-    mean = total/num_lines;
     fclose(file);
     return 0;
 }
