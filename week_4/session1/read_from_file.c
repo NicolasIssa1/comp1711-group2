@@ -30,7 +30,7 @@ int main() {
         line_number_counting++;
     }
     //to count the number of lines
-    printf("There were %d lines\n", line_number_something);
+    printf("There were %d lines\n", line_number_counting);
 
     fclose(file);
     return 0;

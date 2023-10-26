@@ -17,6 +17,7 @@ int main()
         fprintf(file, "%d\n", number);
     }
 
+    
     fclose(file);
     return 0;
 }
