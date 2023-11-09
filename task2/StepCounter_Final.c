@@ -52,6 +52,7 @@ void readFitnessData(const char* filename, FITNESS_DATA* FitnessDataArray, int* 
     char line_buffer[150];
     while (fgets(line_buffer, sizeof(line_buffer), file) != NULL)
      {
+        printf("Reading line: %s", line_buffer);
         char date[11];
         char time[6];
         char steps_str[15];
@@ -67,7 +68,7 @@ void readFitnessData(const char* filename, FITNESS_DATA* FitnessDataArray, int* 
         (*count_record)++;
      }
      fclose(file);
-     printf("File successfully loaded. \n");
+     printf("File successfully loaded \n");
 }
 
 void displayTotalRecords(int count_record)
@@ -82,31 +83,34 @@ int main()
     char choice;
     char filename[256];
 
-    printf("\nMenu Options: \n");
-    printf("A: Specify the filename to be imported\n");
-    printf("Q: Quit \n");
-    printf("Enter choice: ");
-    //i used a space before %c to avoid any whitespace 
-    scanf(" %c", &choice);
-
-    switch(choice)
+    do
     {
-        case 'A':
-            printf("Input filename: ");
-            scanf("%s", filename);
-            readFitnessData(filename, FitnessDataArray, &count_record);
-            break;
+        printf("\nMenu Options: \n");
+        printf("A: Specify the filename to be imported\n");
+        printf("B: Display the total number of records in file\n");
+        printf("Q: Quit \n");
+        printf("Enter choice: ");
+        //i used a space before %c to avoid any whitespace 
+        scanf(" %c", &choice);
 
-        case 'B':
-            displayTotalRecords(count_record);
-            break;
-            
-        case 'Q':
-            printf("Program will exit. \n");
-            break;
-        default:
-            printf("Invalid choice. Try again.\n");
-            break;
-    }  
-    return 0;
+        switch(choice)
+        {
+            case 'A':
+                printf("Input filename: ");
+                scanf("%s", filename);
+                readFitnessData(filename, FitnessDataArray, &count_record);
+                break;
+            case 'B':
+                displayTotalRecords(count_record);
+                break;
+            case 'Q':
+                printf("Program will exit. \n");
+                break;
+            default:
+                printf("Invalid choice. Try again.\n");
+                break;
+        }
+    }
+    while(choice != 'Q');
+    return 0;  
 }
