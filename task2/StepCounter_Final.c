@@ -52,7 +52,6 @@ void readFitnessData(const char* filename, FITNESS_DATA* FitnessDataArray, int* 
     char line_buffer[150];
     while (fgets(line_buffer, sizeof(line_buffer), file) != NULL)
      {
-        printf("Reading line: %s", line_buffer);
         char date[11];
         char time[6];
         char steps_str[15];
@@ -75,6 +74,111 @@ void displayTotalRecords(int count_record)
 {
     printf("Total records: %d\n", count_record);
 }
+
+void displayFewestSteps(FITNESS_DATA* FitnessDataArray, int count_record)
+{
+    if(count_record == 0)
+    {
+        printf("No data to analyze. \n");
+        return;
+    }
+
+    int min_steps = FitnessDataArray[0].steps;
+    int min_index = 0;
+    for(int i = 1; i < count_record; i++)
+    {
+        if(FitnessDataArray[i].steps < min_steps)
+        {
+            min_steps = FitnessDataArray[i].steps;
+            min_index = i;
+        }
+
+    }
+    printf("Fewest steps: %s %s\n", FitnessDataArray[min_index].date, FitnessDataArray[min_index].time);
+
+}
+
+void displayMostSteps(FITNESS_DATA* FitnessDataArray, int count_record)
+{
+    if(count_record == 0)
+    {
+        printf("No data to analyze");
+        return;
+    }
+    int max_steps = FitnessDataArray[0].steps;
+    int max_index =0;
+    for(int i=1; i<count_record; i++)
+    {
+        if(FitnessDataArray[i].steps > max_steps)
+        {
+            max_steps = FitnessDataArray[i].steps;
+            max_index = i;
+        }
+    }
+    printf("Largest steps: %s %s\n", FitnessDataArray[max_index].date, FitnessDataArray[max_index].time);
+}
+
+void displayMeanStepCount(FITNESS_DATA* FitnessDataArray, int count_record)
+{
+    if(count_record == 0)
+    {
+        printf("No data to analyze for mean step count. \n");
+        return;
+    }
+    int total_steps = 0;
+    for(int i=0; i< count_record; ++i)
+    {
+        total_steps += FitnessDataArray[i].steps;
+    }
+    int mean_steps = total_steps / count_record;
+    printf("Mean step count: %d\n", mean_steps);
+}
+
+void displayLongestPeriodAboveThreshold(FITNESS_DATA* FitnessDataArray, int count_record)
+{
+    int start_index = 0;
+    int longest_start = 0;
+    int longest_length = 0;
+    int current_length = 0;
+
+    for(int i =0; i< count_record; i++)
+    {
+        if(FitnessDataArray[i].steps > 500)
+        {
+            if(current_length == 0)
+            {
+                start_index = i;
+            }
+            current_length++;
+        }
+        else{
+            if(current_length > longest_length)
+            {
+                longest_length = current_length;
+                longest_start = start_index;
+            }
+            current_length = 0;
+        }
+    }
+    if(current_length > longest_length)
+    {
+        longest_length = current_length;
+        longest_start = start_index;
+    }
+    if(longest_length == 0)
+    {
+        printf("No continuous period with step count above 500.\n");
+    }
+    else
+    {
+        int longest_end = longest_start + longest_length -1;
+        printf("Longest period start: %s %s\n", FitnessDataArray[longest_start].date, FitnessDataArray[longest_start].time);
+        printf("Longest period end: %s %s\n", FitnessDataArray[longest_end].date, FitnessDataArray[longest_end].time);
+    }
+    
+}
+
+
 // Complete the main function
 int main()
 {
@@ -88,6 +192,10 @@ int main()
         printf("\nMenu Options: \n");
         printf("A: Specify the filename to be imported\n");
         printf("B: Display the total number of records in file\n");
+        printf("C: Find the date and time of the timeslot with the fewest steps\n");
+        printf("D: Find the date and time of the timeslot with the largest number of steps\n");
+        printf("E: Find the mean step count of all the records in the file\n");
+        printf("F: Find the longest continuous period where the step count is above 500 steps\n");
         printf("Q: Quit \n");
         printf("Enter choice: ");
         //i used a space before %c to avoid any whitespace 
@@ -102,6 +210,18 @@ int main()
                 break;
             case 'B':
                 displayTotalRecords(count_record);
+                break;
+            case 'C':
+                displayFewestSteps(FitnessDataArray, count_record);
+                break;
+            case 'D':
+                displayMostSteps(FitnessDataArray, count_record);
+                break;
+            case 'E':
+                displayMeanStepCount(FitnessDataArray, count_record);
+                break;
+            case 'F':
+                displayLongestPeriodAboveThreshold(FitnessDataArray, count_record);
                 break;
             case 'Q':
                 printf("Program will exit. \n");
