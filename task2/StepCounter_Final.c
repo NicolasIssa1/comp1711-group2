@@ -72,6 +72,7 @@ void readFitnessData(const char* filename, FITNESS_DATA* FitnessDataArray, int* 
 
 void displayTotalRecords(int count_record)
 {
+    //I display the total number of records read from the file.
     printf("Total records: %d\n", count_record);
 }
 
@@ -94,6 +95,7 @@ void displayFewestSteps(FITNESS_DATA* FitnessDataArray, int count_record)
         }
 
     }
+    //Then display the date and time of the record with the fewest steps. 
     printf("Fewest steps: %s %s\n", FitnessDataArray[min_index].date, FitnessDataArray[min_index].time);
 
 }
@@ -115,6 +117,7 @@ void displayMostSteps(FITNESS_DATA* FitnessDataArray, int count_record)
             max_index = i;
         }
     }
+    //Now with the most steps.
     printf("Largest steps: %s %s\n", FitnessDataArray[max_index].date, FitnessDataArray[max_index].time);
 }
 
@@ -131,6 +134,7 @@ void displayMeanStepCount(FITNESS_DATA* FitnessDataArray, int count_record)
         total_steps += FitnessDataArray[i].steps;
     }
     int mean_steps = total_steps / count_record;
+    //Calculate and displat the mean step count
     printf("Mean step count: %d\n", mean_steps);
 }
 
@@ -189,6 +193,7 @@ int main()
 
     do
     {
+        //Displayr the menu options to the user 
         printf("\nMenu Options: \n");
         printf("A: Specify the filename to be imported\n");
         printf("B: Display the total number of records in file\n");
