@@ -191,8 +191,8 @@ int main()
     char choice;
     char filename[256];
 
-    //to keep asking the user for the next option ( and not go out of the program,) i used the do function to promt the menu 
-    do
+    //to keep asking the user for the next option ( and not go out of the program,) i used the while (1) function 
+    while(1)
     {
         //Displayr the menu options to the user 
         printf("\nMenu Options: \n");
@@ -238,9 +238,11 @@ int main()
             case 'Q':
             case 'q':
                 printf("Program will exit. \n");
+                return 0;
                 break;
             default:
                 printf("Invalid choice. Try again.\n");
+                return 0;
                 break;
         }
     }
