@@ -244,6 +244,6 @@ int main()
                 break;
         }
     }
-    while(choice != 'Q');
-    return 0;  
+    while(choice != 'Q' && choice != 'q');
+    return 0;
 }
