@@ -191,6 +191,7 @@ int main()
     char choice;
     char filename[256];
 
+    //to keep asking the user for the next option ( and not go out of the program,) i used the do function to promt the menu 
     do
     {
         //Displayr the menu options to the user 
@@ -209,26 +210,33 @@ int main()
         switch(choice)
         {
             case 'A':
+            case 'a':
                 printf("Input filename: ");
                 scanf("%s", filename);
                 readFitnessData(filename, FitnessDataArray, &count_record);
                 break;
             case 'B':
+            case 'b':
                 displayTotalRecords(count_record);
                 break;
             case 'C':
+            case 'c':
                 displayFewestSteps(FitnessDataArray, count_record);
                 break;
             case 'D':
+            case 'd':
                 displayMostSteps(FitnessDataArray, count_record);
                 break;
             case 'E':
+            case 'e':
                 displayMeanStepCount(FitnessDataArray, count_record);
                 break;
             case 'F':
+            case 'f':
                 displayLongestPeriodAboveThreshold(FitnessDataArray, count_record);
                 break;
             case 'Q':
+            case 'q':
                 printf("Program will exit. \n");
                 break;
             default:
