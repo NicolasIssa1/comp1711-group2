@@ -30,6 +30,8 @@ int main()
             return 1;
         }
 
+        //read the data from the file and before you read the menu
+
         printf("A: View all your blood iron levels\n");                       // BRONZE
         printf("B: View your average blood iron level\n");                    // BRONZE
         printf("C: View your lowest blood iron level\n");                     // SILVER
