@@ -237,7 +237,6 @@ int main()
                 break;
             case 'Q':
             case 'q':
-                printf("Program will exit. \n");
                 return 0;
                 break;
             default:
