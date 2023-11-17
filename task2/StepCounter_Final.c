@@ -7,7 +7,7 @@
 
 // Define any additional variables here
 // Global variables for filename and FITNESS_DATA array to store the data
-FITNESS_DATA FitnessDataArray[100];
+FITNESS_DATA FitnessDataArray[1000];
 int count_record = 0;
 
 // This is your helper function. Do not change it in any way.
