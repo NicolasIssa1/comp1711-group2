@@ -56,6 +56,19 @@ int main() {
         //i make sur that the string buffer will not have a newline character at the end 
         buffer[strcspn(buffer, "\n")] = 0;
 
+        //i need to check for two commas , validate the format
+        int comma_count = 0;
+        for (int i = 0; buffer[i]; ++i)
+        {
+            if (buffer[i] == ',') comma_count ++;
+        }
+        if (comma_count != 2)
+        {
+            printf("Error: invalid file format\n");
+            fclose(file);
+            return 1;
+        }
+
         //then store data (like we did in task 1 , splitting lines...)
         tokeniseRecord(buffer, ',', data[count].date, data[count].time, &data[count].steps);
         count++;
