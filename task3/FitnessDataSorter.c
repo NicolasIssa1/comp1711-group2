@@ -25,6 +25,58 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
     }
 }
 
+//i create a function to validate the date to avoid bad data error
+int isValidDate(const char *date)
+{
+    //check for the lenght and format 
+    if(strlen(date) != 10)
+    {
+        return 0;
+    }
+    if(date[4] != '-' || date[7] != '-')
+    {
+        return 0;
+    }
+    for(int i = 0; i<10; i++)
+    {
+        if(i == 4 || i == 7)
+        {
+            continue;
+        }
+        if(date[i] < '0' || date[i] > '9')
+        {
+            return 0;
+        }
+    }
+    return 1;
+    
+}
+
+//now i create the function to validate the time format
+int isValidTime(const char *time)
+{
+    //check for lenght and format
+    if(strlen(time)!= 5)
+    {
+        return 0;
+    }
+    if(time[2] != ':')
+    {
+        return 0;
+    }
+    for(int i = 0; i < 5; i++)
+    {
+        if(i == 2)
+        {
+            continue;
+        }
+        if(time[i] < '0' || time[i] > '9')
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
 
 int main() {
     char filename[100];
@@ -51,7 +103,7 @@ int main() {
     //I then check if the file is in the correct format ( 12-15...)
 
     char buffer[700];
-    while (fgets(buffer, 700, file)!= NULL)
+    while (fgets(buffer, sizeof(buffer), file)!= NULL)
     {
         //i make sur that the string buffer will not have a newline character at the end 
         buffer[strcspn(buffer, "\n")] = 0;
@@ -60,22 +112,33 @@ int main() {
         int comma_count = 0;
         for (int i = 0; buffer[i]; ++i)
         {
-            if (buffer[i] == ',') comma_count ++;
+            if (buffer[i] == ',')
+            {
+                comma_count ++;
+            } 
         }
         if (comma_count != 2)
         {
-            printf("Error: invalid file format\n");
+            printf("Error: invalid file format - incorrect number of fields\n");
             fclose(file);
             return 1;
         }
 
         //then store data (like we did in task 1 , splitting lines...)
+        //parse the entire record
         tokeniseRecord(buffer, ',', data[count].date, data[count].time, &data[count].steps);
-        count++;
+        
+        //now i need to validate if the steps are valid integerso or else we keep getting the bad data error
+        char *lastComma = strrchr(buffer, ',');
+        if(!isValidDate(data[count].date) || !isValidTime(data[count].time))
+        {
+            printf("Error: Invalid data format and steps are not a valid integer\n");
+            fclose(file);
+            return 1;
+        }
+
+        count ++;
     }
-
-    fclose(file);
-
     //sort the data in descedning order of steps 
     for ( int i = 0 ; i < count -1; i++)
     {
@@ -93,27 +156,19 @@ int main() {
     
     //(arrived here sunday 12 november )
     //now we create an output filename and append .tsv to the input one
-    strcpy(out_filename, filename);
-    //to append i used a new function called strcat
-    strcat(out_filename, ".tsv");
-
-    //then open the output file in write mode 
+    snprintf(out_filename, sizeof(out_filename), "%s.tsv", filename);
     outfile = fopen(out_filename, "w");
     if(outfile == NULL)
     {
         printf("Error: could not create output file\n");
         return 1;
     }
-    //then wrrite the sorted data into the output file
-    for (int i = 0; i< count; i++)
+    //now write the sorted data into the output file
+    for(int i = 0; i < count; i++)
     {
-        //i  usef \t because the spaces in the output file are \t characters 
         fprintf(outfile, "%s\t%s\t%d\n", data[i].date, data[i].time, data[i].steps);
     }
-
-    //finally close the output file and return 0 to exist successfully
     fclose(outfile);
     printf("Data sorted and written to %s\n", out_filename);
-
     return 0;
-}   
+}
