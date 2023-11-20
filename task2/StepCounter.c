@@ -133,8 +133,8 @@ void displayMeanStepCount(FITNESS_DATA* FitnessDataArray, int count_record)
     {
         total_steps += FitnessDataArray[i].steps;
     }
-    int mean_steps = total_steps / count_record;
-    //Calculate and displat the mean step count
+    int mean_steps = (total_steps + count_record / 2) / count_record;
+    //Calculate and display the mean step count
     printf("Mean step count: %d\n", mean_steps);
 }
 
@@ -186,7 +186,7 @@ void displayLongestPeriodAboveThreshold(FITNESS_DATA* FitnessDataArray, int coun
 // Complete the main function
 int main()
 {
-    FITNESS_DATA FitnessDataArray[100];
+    FITNESS_DATA FitnessDataArray[1000];
     int count_record = 0;
     char choice;
     char filename[256];
