@@ -12,14 +12,23 @@ typedef struct {
 // Function to tokenize a record
 void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *steps) {
     char *ptr = strtok(record, &delimiter);
-    if (ptr != NULL) {
+    if (ptr != NULL)
+     {
         strcpy(date, ptr);
         ptr = strtok(NULL, &delimiter);
-        if (ptr != NULL) {
+        if (ptr != NULL) 
+        {
             strcpy(time, ptr);
             ptr = strtok(NULL, &delimiter);
-            if (ptr != NULL) {
+            if (ptr != NULL)
+             {
+                // i added also an additional check to ensure that atoi has not failed when the input is not '0'
                 *steps = atoi(ptr);
+                if (*steps == 0 && ptr[0] != '0') 
+                {
+                    //but if concersion fails, so invalidate steps
+                    *steps = -1;
+                }
             }
         }
     }
@@ -51,7 +60,6 @@ int isValidDate(const char *date)
     return 1;
     
 }
-
 //now i create the function to validate the time format
 int isValidTime(const char *time)
 {
@@ -78,14 +86,32 @@ int isValidTime(const char *time)
     return 1;
 }
 
+void sortData(FitnessData data[], int count)
+{
+    int i, j;
+    for (i = 0; i < count -1; i++)
+    {
+        for (j = 0; j < count -i -1; j++)
+        {
+            if(data[j].steps < data[j+1].steps)
+            {
+                //then swap the fitnessdata records
+                FitnessData temp = data[j];
+                data[j] = data[j+1];
+                data[j+1] = temp;
+            }
+        }
+    }
+}
+
 int main() {
     char filename[100];
-    char out_filename[150];
     FILE *file, *outfile;
     //I assume we will not have more than 500 records ( maximum assumption) 
     FitnessData data[500];
     //Keep track of number of records till the end
     int count = 0;
+    char buffer [700];
 
     //Ask for user to etner a filename 
     printf("Enter a filename: ");
@@ -101,8 +127,6 @@ int main() {
     }
 
     //I then check if the file is in the correct format ( 12-15...)
-
-    char buffer[700];
     while (fgets(buffer, sizeof(buffer), file)!= NULL)
     {
         //i make sur that the string buffer will not have a newline character at the end 
@@ -110,12 +134,12 @@ int main() {
 
         //i need to check for two commas , validate the format
         int comma_count = 0;
-        for (int i = 0; buffer[i]; ++i)
+        for (int i = 0; buffer[i]; i++)
         {
-            if (buffer[i] == ',')
+            if(buffer[i] == ',')
             {
-                comma_count ++;
-            } 
+                comma_count++;
+            }
         }
         if (comma_count != 2)
         {
@@ -124,37 +148,37 @@ int main() {
             return 1;
         }
 
-        //then store data (like we did in task 1 , splitting lines...)
-        //parse the entire record
+        // i initialize steps to an invalid value to detect different parsing errors
+        data[count].steps = -1;
+        //parse the line into date time and steps
         tokeniseRecord(buffer, ',', data[count].date, data[count].time, &data[count].steps);
-        
-        //now i need to validate if the steps are valid integerso or else we keep getting the bad data error
-        char *lastComma = strrchr(buffer, ',');
-        if(!isValidDate(data[count].date) || !isValidTime(data[count].time))
+
+        //checking if the steps are valid after tokenization
+        if(data[count].steps == -1)
         {
-            printf("Error: Invalid data format and steps are not a valid integer\n");
+            printf("Error: Invalid step count format\n");
             fclose(file);
             return 1;
         }
 
-        count ++;
-    }
-    //sort the data in descedning order of steps 
-    for ( int i = 0 ; i < count -1; i++)
-    {
-        for (int j = 0; j < count -i -1; j++)
+        //now i validate tje date and time, if not valid, print an erorr messgae and close file and return 1
+        if(!isValidDate(data[count].date) || !isValidTime(data[count].time))
         {
-            if(data[j].steps < data[j+1].steps)
-            {
-                //then swap the fitnessdata records
-                FitnessData temp = data[j];
-                data[j] = data[j+1];
-                data[j+1] = temp;
-            }
+            printf("Error: Invalid data format\n");
+            fclose(file);
+            return 1;
         }
+
+        count++;
     }
-    
-    //(arrived here sunday 12 november )
+
+    fclose(file);
+
+    //sort the data in descedning order of steps 
+    sortData(data, count);
+
+    char out_filename[150];
+    //(arrived here sunday 26 november )
     //now we create an output filename and append .tsv to the input one
     snprintf(out_filename, sizeof(out_filename), "%s.tsv", filename);
     outfile = fopen(out_filename, "w");
@@ -163,6 +187,7 @@ int main() {
         printf("Error: could not create output file\n");
         return 1;
     }
+
     //now write the sorted data into the output file
     for(int i = 0; i < count; i++)
     {
