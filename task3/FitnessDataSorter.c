@@ -34,7 +34,7 @@ void tokeniseRecord(char *record, char delimiter, char *date, char *time, int *s
     }
 }
 
-//i create a function to validate the date to avoid bad data error
+//i create a function to validate the date to avoid bad data error ( and return 1)
 int isValidDate(const char *date)
 {
     //check for the lenght and format 
@@ -86,6 +86,7 @@ int isValidTime(const char *time)
     return 1;
 }
 
+//to sort the data , 
 void sortData(FitnessData data[], int count)
 {
     int i, j;
