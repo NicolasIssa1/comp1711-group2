@@ -1,85 +1,70 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
-// Define the maze size
-#define rows 13
-#define cols 13
+//Constants to define the maze size
+#define ROWS 13
+#define COLS 13
 
-//I implement a function to check if a move is within the maze bounds
-int is_within_bounds(int x, int y)
-{
-    return x>= 0 && x< rows && y >= 0 && y < cols;
-}
+//Functions prototypes with brief descriptions
+
+/**
+ * Checks if the specified coordinates are within the maze boundaries.
+ * @param x The x-coordinate (row index).
+ * @param y The y-coordinate (column index).
+ * @return Non-zero if within bounds, zero otherwise.
+ */
+
+int is_within_bounds(int x, int y);
+
+/**
+ * Prints the maze to the console with the player's current position indicated.
+ * Use the rows and cols constants to check the boundaries
+ * @param maze represents the maze array.
+ * @param playerRow is the current row of the player.
+ * @param playerCol is the current column of the player.
+ */
+
+void printMaze(char maze[ROWS][COLS], int playerRow, int playerCol);
+
+/**
+ * Moves the player in the maze according to the given direction.
+ * Iterate over the maze array and print each cell
+ * Then use 'X' to represent the player's position ( indication)
+ * @param maze The maze array.
+ * @param playerRow A pointer to the player's current row.
+ * @param playerCol A pointer to the player's current column.
+ * @param direction The direction in which to move the player.
+ */
+
+void movePlayer(char maze[ROWS][COLS], int *playerRow, int *playerCol, char direction);
+
+/**
+ *Carves a path ( one path) in the maze from start to end position.
+ *Update the player position based on the input direction.
+ *Then check for walls and prevent movement into them. 
+ * @param maze The maze array.
+ * @param startRow The starting row for carving the path.
+ * @param startCol The starting column for carving the path.
+ * @param endRow The ending row for the path.
+ * @param endCol The ending column for the path.
+ */
+
+void carvePath(char maze[ROWS][COLS], int startRow, int startCol, int endRow, int endCol);
+//Main function where the program begins execution of the actual maze game
+//Ensuring thart the path is continious and does not create shortcuts or remove walls that are part of the maze's challenge.
 
 int main() {
-    //start by initializing the maze array
-    char maze[rows][cols]; 
+    char maze[ROWS][COLS];
+    // Start with initialization code and game setup here
 
-    for (int row = 0; row < rows; row++){
-        for (int col = 0; col < cols; col++){
-            maze[row][col] = '#';
-        }
-    }
+    // The main game loop where player input and game logic are handled here
+    //...
+    //...
 
-    // Seed the random number generator
-    srand(time(NULL));
+    // Finally, the code for writing the final state of the maze to a file
+    // ...
 
-    // Randomly select a start position along the top row
-    int start = rand() % cols;
-    maze[0][start] = 'S';
-
-    //Random route genereated from S to the bottom row
-    int current_row = 0;
-    int current_col = start;
-
-    while(current_row < rows -1)
-    {
-        int next_row = current_row;
-        int next_col = current_col;
-
-        // Move down every time, but sometimes also move left or right to create obstacles and a path
-        next_row++;
-    
-
-    // Randomly decide if we should move left or right
-        if (rand() % 3) {
-            int direction = (rand() % 2) * 2 - 1;
-            next_col += direction;
-        }
-
-        // Make sure the next_col is within bounds
-        if (next_col < 0) {
-            next_col = 0;
-        } else if (next_col >= cols) {
-            next_col = cols - 1;
-        }
-
-        // Carve the path if the next position is within bounds and if itis a wall
-        if (is_within_bounds(next_row, next_col) && maze[next_row][next_col] == '#') {
-            maze[next_row][next_col] = ' ';
-            current_row = next_row;
-            current_col = next_col;
-        }
-    }
-
-    // Set the end point 'E'
-    maze[rows - 1][current_col] = 'E';
-
-    char filename [] = "maze.tsv";
-    FILE *file = fopen(filename, "w");
-    if (file == NULL) {
-        perror("Error opening file");
-        return 1;
-    }
-
-    for (int row = 0; row < rows; row++){
-        for (int col = 0; col < cols; col++){
-            fprintf(file, "%c", maze[row][col]);
-        }
-        fprintf(file, "\n");
-    }
-
-    fclose(file);
-    return 0;
+    return 0; // indicates a successful program termination
 }
