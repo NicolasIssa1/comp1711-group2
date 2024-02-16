@@ -138,6 +138,7 @@ else
 fi
 
 
+
 # Clean up
 echo "Cleaning up..."
 rm "$MAZE_FILE"
