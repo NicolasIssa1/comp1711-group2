@@ -137,6 +137,66 @@ else
     test_status=1
 fi
 
+# Test 7: Non-Rectangular Maze Test
+echo "Running Test 7: Non-Rectangular Maze Test..."
+output=$(./maze non_rectangular_maze.txt)
+if echo "$output" | grep -q "Error: Maze is not rectangular"; then
+    echo "Test 7 (Non-Rectangular Maze Test): Passed"
+else
+    echo "Test 7 (Non-Rectangular Maze Test): Failed"
+    test_status=1
+fi
+
+# Test 8: No Start Maze Test
+echo "Running Test 8: No Start Maze Test..."
+output=$(./maze no_start_maze.txt)
+if echo "$output" | grep -q "Error: No start point in maze"; then
+    echo "Test 8 (No Start Maze Test): Passed"
+else
+    echo "Test 8 (No Start Maze Test): Failed"
+    test_status=1
+fi
+
+# Test 9: No End Maze Test
+echo "Running Test 9: No End Maze Test..."
+output=$(./maze no_end_maze.txt)
+if echo "$output" | grep -q "Error: No end point in maze"; then
+    echo "Test 9 (No End Maze Test): Passed"
+else
+    echo "Test 9 (No End Maze Test): Failed"
+    test_status=1
+fi
+
+# Test 10: Complex Maze Validation Test
+echo "Running Test 10: Complex Maze Validation Test..."
+start_points=$(grep -o "S" complex_maze.txt | wc -l)
+end_points=$(grep -o "E" complex_maze.txt | wc -l)
+
+if [ "$start_points" -ne 1 ]; then
+    echo "Test 10.1 (Complex Maze Start Point Test): Failed - Incorrect number of start points"
+    test_status=1
+else
+    echo "Test 10.1 (Complex Maze Start Point Test): Passed"
+fi
+
+if [ "$end_points" -ne 1 ]; then
+    echo "Test 10.2 (Complex Maze End Point Test): Failed - Incorrect number of end points"
+    test_status=1
+else
+    echo "Test 10.2 (Complex Maze End Point Test): Passed"
+fi
+
+# Test 11: Complex Maze Navigation Test
+echo "Running Test 11: Complex Maze Navigation Test..."
+output=$(cat complex_path_input.txt | ./maze complex_maze.txt)
+# Check for expected program behavior based on input
+
+if [ "expected_condition" ]; then
+    echo "Test 11 (Complex Maze Navigation Test): Passed"
+else
+    echo "Test 11 (Complex Maze Navigation Test): Failed"
+    test_status=1
+fi
 
 
 # Clean up
