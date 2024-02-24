@@ -1,286 +1,252 @@
 #!/bin/bash
 
-# Define the maze executable and file names for each test
+# Define the maze executable and temporary file
 EXECUTABLE="./maze"
-MAZE_FILE="simple_maze.txt"
-SIMPLE_MAZE_FILE="simple_maze.txt"
-NO_END_MAZE_FILE="no_end_maze.txt"
+TMP_FILE="tmp"
 
-# Compiling the maze program
-#This test checks if the maze program compiles without errors
+# Start to compile the maze program
 echo "Compiling maze.c..."
-gcc maze.c -o maze
-compile_status=$?
-
-# Initialize test status
-test_status=0
-
-# Test 1: Check if the program compiled successfully
-if [ $compile_status -ne 0 ]; then
-    echo "Test 1 (Compilation Test): Failed to compile maze.c"
-    test_status=1
-else
-    echo "Test 1 (Compilation Test): Passed"
+if ! gcc maze.c -o "$EXECUTABLE"; then
+    echo "Compilation failed."
+    exit 1
 fi
 
-# Provide input for the maze program from a file, if required
-# echo "Providing input from simple_path_input.txt..."
-# $EXECUTABLE < simple_path_input.txt
+echo -e "\n\n~~ Maze Tests ~~"
 
-# ... (you would add any other automated input here)
-
-# Test 2: Maze File Creation test
-# This test checks if the maze file maze.tsv was created by the program
-if [ ! -f "$MAZE_FILE" ]; then
-    echo "Test 2 (Maze File Creation Test): Failed to create maze file"
-    test_status=1
+# Test 1:  for simple maze
+echo -n "Test 1: Testing simple maze - "
+$EXECUTABLE simple_maze.txt < simple_path_input.txt > "$TMP_FILE" 2>&1
+# Assuming "Player reached the end" indicates a successful navigation
+if grep -q "Player reached the end" "$TMP_FILE"; then
+    echo "Test 1 :PASS"
 else
-    echo "Test 2 (Maze File Creation Test): Passed"
+    echo "Test 1:FAIL"
 fi
 
-# Test 3: Validate the contents of the maze (main maze file)
-# Check for the correct number of 'S' and 'E'
-start_count=$(grep -o "S" "$MAZE_FILE" | wc -l)
-end_count=$(grep -o "E" "$MAZE_FILE" | wc -l)
-
-#Test 3.1 : Start point test
-# This test checks if the main maze file contains exactly one start point "S"
-if [ "$start_count" -ne 1 ]; then
-    echo "Test 3.1 (Start Point Test): Invalid number of start points"
-    test_status=1
+# Test 2:  for non-rectangular maze
+echo -n "Test 2 : Testing non-rectangular maze - "
+$EXECUTABLE non_rectangular_maze.txt < non_rectangular_input.txt > "$TMP_FILE" 2>&1
+# Assuming "Error: Maze is not rectangular" as expected output
+if grep -q "Error: Maze is not rectangular" "$TMP_FILE"; then
+    echo "Test 2: PASS"
 else
-    echo "Test 3.1 (Start Point Test): Passed"
+    echo "Test 2: FAIL"
 fi
 
-#Test 3.2: End point test
-#This one checs if the maze file contrains exactly one end point 'E'
-if [ "$end_count" -ne 1 ]; then
-    echo "Test 3.2 (End Point Test): Invalid number of end points"
-    test_status=1
+# Test 3: for no start maze
+echo -n "Test 3: Testing no start maze - "
+$EXECUTABLE no_start_maze.txt < no_start_input.txt > "$TMP_FILE" 2>&1
+# Assuming "Error: No start point found" as expected output
+if grep -q "Error: No start point S found" "$TMP_FILE"; then
+    echo "Test 3: PASS"
 else
-    echo "Test 3.2 (End Point Test): Passed"
+    echo "Test 3: FAIL"
 fi
 
-# Test 4: Maze Boundaries Test
-echo "Running Test 4: Maze Boundaries Test..."
+# Test 4: for no end maze
+echo -n "Test 4: Testing no end maze - "
+$EXECUTABLE no_end_maze.txt < no_end_input.txt > "$TMP_FILE" 2>&1
+# Add here the condition you expect when no end point is in the maze
+if grep -q "Maze has no end" "$TMP_FILE"; then
+    echo "Test 4: PASS"
+else
+    echo "Test 4: FAIL"
+fi
 
-#We made an assumption: MAZE_FILE should have been created after running the executable with a valid maze file
-# Define expected row and column count
+# Test 5: for complex maze
+echo -n "Test 5: Testing complex maze - "
+$EXECUTABLE complex_maze.txt < complex_path_input.txt > "$TMP_FILE" 2>&1
+# Assuming specific conditions for complex maze navigation success
+if grep -q "Player can't reach the end" "$TMP_FILE"; then
+    echo "Test 5: PASS"
+else
+    echo "Test 5: FAIL"
+fi
+
+# Test 6: Testing player starts at 'S'
+echo -n "Test 6: Testing player starts at 'S' - "
+$EXECUTABLE valid_maze.txt < valid_path_input.txt > "$TMP_FILE" 2>&1
+if grep -q "PLayer X starts at position S" "$TMP_FILE"; then
+    echo "Test 6: PASS"
+else
+    echo "Test 6: FAIL"
+fi
+
+# Test 7: Testing player can move correctly (e.g., move right)
+echo -n "Test 7: Testing player move right - "
+$EXECUTABLE valid_maze.txt < valid_path_input.txt > "$TMP_FILE" 2>&1
+if grep -q "Player moves right using D command" "$TMP_FILE"; then
+    echo "Test 7: PASS"
+else
+    echo "Test 7: FAIL"
+fi
+
+# Test 8: Testing maze with incorrect characters
+echo -n "Test 8: Testing maze with incorrect characters - "
+$EXECUTABLE incorrect_characters_maze.txt > "$TMP_FILE" 2>&1
+if grep -q "Error: Incorrect characters in maze" "$TMP_FILE"; then
+    echo "Test 8: PASS"
+else
+    echo "Test 8: FAIL"
+fi
+
+# Test 9: Testing maze with multiple 'S' or 'E'
+echo -n "Test 9: Testing maze with multiple 'S' or 'E' - "
+$EXECUTABLE multiple_maze.txt > "$TMP_FILE" 2>&1
+if grep -q "Error: Multiple start or end points" "$TMP_FILE"; then
+    echo "Test 9: PASS"
+else
+    echo "Test 9: FAIL"
+fi
+
+# Test 10: Testing movement commands from file
+echo -n "Test 10: Testing movement commands from file - "
+$EXECUTABLE valid_maze.txt < invalid_input.txt > "$TMP_FILE" 2>&1
+if grep -q "Expected final position message" "$TMP_FILE"; then
+    echo "Test 10: PASS"
+else
+    echo "Test 10: FAIL"
+fi
+
+# Test 11: Testing wall boundaries are solid
+echo -n "Test 11: Testing wall boundaries are solid - "
+if grep -q "Error: Wall boundaries are not solid" "$TMP_FILE"; then
+    echo "Test 11: PASS"
+else
+    echo "Test 11: FAIL"
+fi
+
+# Test 12: Testing invalid movement (e.g., through a wall)
+echo -n "Test 12: Testing invalid movement through a wall - "
+$EXECUTABLE valid_maze.txt < invalid_movement_input.txt > "$TMP_FILE" 2>&1
+if grep -q "Error: Cannot move through walls" "$TMP_FILE"; then
+    echo "Test 12: PASS"
+else
+    echo "Test 12: FAIL"
+fi
+
+# Test 13: Testing game over condition
+echo -n "Test 13: Testing game over condition - "
+$EXECUTABLE valid_maze.txt > "$TMP_FILE" 2>&1
+if grep -q "Game over message" "$TMP_FILE"; then
+    echo "Test 13: PASS"
+else
+    echo "Test 13: FAIL"
+fi
+
+# Test 14: Testing maze with no paths from 'S' to 'E'
+echo -n "Test 14: Testing maze with no paths from 'S' to 'E' - "
+$EXECUTABLE complex_maze.txt > "$TMP_FILE" 2>&1
+if grep -q "Error: No path from start S to end E" "$TMP_FILE"; then
+    echo "Test 14: PASS"
+else
+    echo "Test 14: FAIL"
+fi
+
+# Test 15: Testing player ends at 'E'
+echo -n "Test 15: Testing player ends at 'E' - "
+$EXECUTABLE valid_maze.txt < valid_movement_input.txt > "$TMP_FILE" 2>&1
+if grep -q "PLayer X ends at position E" "$TMP_FILE"; then
+    echo "Test 15: PASS"
+else
+    echo "Test 15: FAIL"
+fi
+
+# Test 16: Counting Rows
+echo -n "Test 16: Counting Rows - "
+$EXECUTABLE valid_maze.txt > "$TMP_FILE" 2>&1
+#i implement my expected rows and check if the actual rows are equal to the expected ones
 EXPECTED_ROWS=13
+actual_rows=$(grep -c . "valid_maze.txt")
+if [ "$actual_rows" -eq "$EXPECTED_ROWS" ]; then
+    echo "Test 16: PASS"
+else
+    echo "Test 16: FAIL"
+fi
+
+# Test 17: Counting Columns
+echo -n "Test 17: Counting Columns - "
+$EXECUTABLE valid_maze.txt > "$TMP_FILE" 2>&1
+# same implementation for the colunmss and the condition. 
 EXPECTED_COLS=13
-
-# Count the actual number of rows and columns
-actual_rows=$(cat "$MAZE_FILE" | wc -l)
-actual_cols=$(head -1 "$MAZE_FILE" | grep -o . | wc -l)
-
-# Test 4.1: Row count test
-# to validate the correct number of rows
-if [ "$actual_rows" -ne $EXPECTED_ROWS ]; then
-    echo "Test 4.1 (Row Count Test): Failed - Expected $EXPECTED_ROWS rows, found $actual_rows"
-    test_status=1
+actual_cols=$(head -1 "valid_maze.txt" | awk '{print length}')
+if [ "$actual_cols" -eq "$EXPECTED_COLS" ]; then
+    echo "Test 17: PASS"
 else
-    echo "Test 4.1 (Row Count Test): Passed"
+    echo "Test 17: FAIL"
 fi
 
-# Test 4.2: Column count test
-#Validate the correct number of columns
-if [ "$actual_cols" -ne $EXPECTED_COLS ]; then
-    echo "Test 4.2 (Column Count Test): Failed - Expected $EXPECTED_COLS columns, found $actual_cols"
-    test_status=1
+# Test 18: Check Top and Bottom Boundaries
+echo -n "Test 18: Check Top and Bottom Boundaries - "
+$EXECUTABLE valid_maze.txt > "$TMP_FILE" 2>&1
+top_boundary=$(head -1 "valid_maze.txt")
+bottom_boundary=$(tail -1 "valid_maze.txt")
+if [[ "$top_boundary" == '#S########' ]] && [[ "$bottom_boundary" == '#E########' ]]; then
+    echo "Test 18: PASS"
 else
-    echo "Test 4.2 (Column Count Test): Passed"
+    echo "Test 18: FAIL"
 fi
 
-# Test 4.3: Boundary walls test
-#Check for walls at the maze boundaries ( the # denotes the walls)
-boundary_test_passed=true
-
-# Check the top and bottom boundaries
-top_boundary=$(head -1 "$MAZE_FILE")
-bottom_boundary=$(tail -1 "$MAZE_FILE")
-if ! [[ "$top_boundary" =~ ^\#+$ ]] || ! [[ "$bottom_boundary" =~ ^\#+$ ]]; then
-    boundary_test_passed=false
-fi
-
-# Check the left and right boundaries
-while read -r line; do
-    if ! [[ $line =~ ^\#.*\#$ ]]; then
-        boundary_test_passed=false
-        break
-    fi
-done < "$MAZE_FILE"
-
-if ! $boundary_test_passed; then
-    echo "Test 4.3 (Boundary Walls Test): Failed - Not all boundaries have walls"
-    test_status=1
+# Test 19: Check Left and Right Boundaries
+echo -n "Test 19: Check Left and Right Boundaries - "
+$EXECUTABLE valid_maze.txt > "$TMP_FILE" 2>&1
+# This assumes that the maze uses '#' for walls
+if ! grep -qv '^\#.*\#$' "valid_maze.txt"; then
+    echo "Test 19: PASS"
 else
-    echo "Test 4.3 (Boundary Walls Test): Passed"
+    echo "Test 19: FAIL"
 fi
 
-echo "Test 4 toal (Maze Boundaries Test): All boundary tests passed."
-
-
-# Test 5: Game logic test:
-#Test game logic with no_end_maze.txt ( no end maze)
-echo "Running Test 5: Game Logic Test with no end maze..."
-
-# Run the program with the no_end_maze.txt and capture the output
-#This test checks the game's response when provided a maze without an end point. 
-output=$(cat no_end_input.txt | ./maze no_end_maze.txt)
-
-# An example check:
-if echo "$output" | grep -q "No end found"; then
-    echo "Test 5 (Game Logic Test - No End Maze): Passed"
-else
-    echo "Test 5 (Game Logic Test - No End Maze): Failed"
-    test_status=1
-fi
-
-# Test 6: Player Movement Tests
-# Simulate the player moving up (W), which should be a valid move
-echo "Running Test 6.1: Player Move Up Test..."
-output=$(echo "W" | ./maze valid_maze.txt)
-# Test 6.1: Player Move up test
-# This test simulates a player moving up to validate if movement is handled correctly. 
+# Test 20: Player Move Up Test
+echo -n "Test 20: Player Move Up Test - "
+$EXECUTABLE valid_maze.txt < move_up_input.txt  > "$TMP_FILE" 2>&1
 if echo "$output" | grep -q "Moved up"; then
-    echo "Test 6.1 (Player Move Up Test): Passed"
+    echo "Test 20: PASS"
 else
-    echo "Test 6.1 (Player Move Up Test): Failed"
-    test_status=1
+    echo "Test 20: FAIL"
 fi
 
-# Test 6.2: Player move down test
-# This test simulates a player moving down (S) to validate if the movement is handled correctly.
-echo "Running Test 6.2: Player Move Down Test..."
-output=$(echo "S" | $EXECUTABLE valid_maze.txt)
-# Check for the expected output indicating the player has moved down
+# Test 21: Player Move Down Test
+echo -n "Test 21: Player Move Down Test - "
+$EXECUTABLE valid_maze.txt < move_down_input.txt  > "$TMP_FILE" 2>&1
 if echo "$output" | grep -q "Moved down"; then
-    echo "Test 6.2 (Player Move Down Test): Passed"
+    echo "Test 21: PASS"
 else
-    echo "Test 6.2 (Player Move Down Test): Failed"
-    test_status=1
+    echo "Test 21: FAIL"
 fi
 
-# Test 7: Non-Rectangular Maze Test
-#This test checks the game's response when provided a non-rectangular maze.
-echo "Running Test 7: Non-Rectangular Maze Test..."
-output=$(./maze non_rectangular_maze.txt)
-if echo "$output" | grep -q "Error: Maze is not rectangular"; then
-    echo "Test 7 (Non-Rectangular Maze Test): Passed"
-else
-    echo "Test 7 (Non-Rectangular Maze Test): Failed"
-    test_status=1
-fi
-
-# Test 8: No Start Maze Test
-#This test checks the game's response when provided with a maze with no start point 
-echo "Running Test 8: No Start Maze Test..."
-output=$(./maze no_start_maze.txt)
-if echo "$output" | grep -q "Error: No start point in maze"; then
-    echo "Test 8 (No Start Maze Test): Passed"
-else
-    echo "Test 8 (No Start Maze Test): Failed"
-    test_status=1
-fi
-
-# Test 9: No End Maze Test
-# This one checks the game's response when provided a maze with no end point
-echo "Running Test 9: No End Maze Test..."
-output=$(./maze no_end_maze.txt)
-if echo "$output" | grep -q "Error: No end point in maze"; then
-    echo "Test 9 (No End Maze Test): Passed"
-else
-    echo "Test 9 (No End Maze Test): Failed"
-    test_status=1
-fi
-
-# Test 10: Complex Maze Validation Test
-echo "Running Test 10: Complex Maze Validation Test..."
-start_points=$(grep -o "S" complex_maze.txt | wc -l)
-end_points=$(grep -o "E" complex_maze.txt | wc -l)
-
-#Test 10.1: Complex Maze Start point test
-#This test checks if the complex maze has the correct start point 
-if [ "$start_points" -ne 1 ]; then
-    echo "Test 10.1 (Complex Maze Start Point Test): Failed - Incorrect number of start points"
-    test_status=1
-else
-    echo "Test 10.1 (Complex Maze Start Point Test): Passed"
-fi
-
-# Test 10.2: Complex maze end point test
-# This test checks if the complex maze has the correct end point
-if [ "$end_points" -ne 1 ]; then
-    echo "Test 10.2 (Complex Maze End Point Test): Failed - Incorrect number of end points"
-    test_status=1
-else
-    echo "Test 10.2 (Complex Maze End Point Test): Passed"
-fi
-
-# Test 11: Complex Maze Navigation Test
-#This test checks if the player can navigate through a complex maze according to te given input commands.
-echo "Running Test 11: Complex Maze Navigation Test..."
-output=$(cat complex_path_input.txt | ./maze complex_maze.txt)
-
+# Test 22: Valid Maze Navigation Test ( from the start S to the end E)
+echo -n "Test 22: Valid Maze Navigation Test - "
+$EXECUTABLE valid_maze.txt < valid_movement_input.txt > "$TMP_FILE" 2>&1
 if echo "$output" | grep -q "Player reached the end"; then
-    echo "Test 11 (Complex Maze Navigation Test): Passed"
+    echo "Test 22: PASS"
 else
-    echo "Test 11 (Complex Maze Navigation Test): Failed"
-    test_status=1
+    echo "Test 22: FAIL"
 fi
 
-#Test 12: System error handling test
-echo "Running Test 12: System Error Handling test..."
-#this test is to attempt to run the program with a non-existent maze file
-output=$(./maze non_existent_maze.txt 2>&1)
-if echo "$output" | grep -q "Error opening maze file" ; then
-    echo "Test 12 (System Error handling test): Passed"
+# Test 23: Bad User Input Test
+echo -n "Test 23: Bad User Input Test - "
+# I simulate a bad input command 'B'
+echo "B" | $EXECUTABLE valid_maze.txt < bad_user_input.txt > "$TMP_FILE" 2>&1
+# Assuming "Invalid command" message indicates incorrect input
+if grep -q "Invalid command" "$TMP_FILE"; then
+    echo "Test 23: PASS"
 else
-    echo "Test 12 (System Error handling test): Failed"
-    test_status=1
+    echo "Test 23: FAIL"
 fi
 
-#Test 13: Bad User input test
-echo "Running test 13: Bad User input test..."
-#this test is to simulate invalid movement command
-output=$(echo "Z" | ./maze valid_maze.txt 2>&1)
-if echo "output" | grep -q "Invalid command" ;then
-    echo "Test 13 (Bad User Input Test): Passed"
+# Test 24: System Error Handling Test
+echo -n "Test 24: System Error Handling Test - "
+# Attempt to run the program with a non-existent file
+$EXECUTABLE non_existent_file.txt > "$TMP_FILE" 2>&1
+# Assuming "Error: Cannot open file" message indicates a file access issue
+if grep -q "Error: Cannot open file" "$TMP_FILE"; then
+    echo "Test 24: PASS"
 else
-    echo "Test 13 (Bad User Input Test) : Failed"
-    test_status=1
+    echo "Test 24: FAIL"
 fi
 
-#Test 14: Attempt to move through the walls test
-echo "Running Test 14: Attempt to move through wall test..."
-#Here we assume "W" command moves the player up into a wall in the maze
-output=$(echo "W" | ./maze valid_maze_with_wall_at_top.txt 2>&1)
-if echo "$output" | grep -q "Cannot move through walls"; then
-    echo "Test 14 (Attempt to Move Through Wall Test): Passed"
-else
-    echo "Test 14 (Attempt to Move Through Wall Test): Failed"
-    test_status=1
-fi
+# Cleaning up the temporary file
+rm -f "$TMP_FILE"
 
-# Test 15: Valid Maze Navigation Test
-echo "Running Test 15: Valid Maze Navigation Test..."
-#this test is to test the actual valid maze file if it works correctly. 
-output=$(cat valid_path_input.txt | ./maze valid_maze.txt)
-if echo "$output" | grep -q "Player reached the end"; then
-    echo "Test 15 (Valid Maze Navigation Test): Passed"
-else
-    echo "Test 15 (Valid Maze Navigation Test): Failed"
-    test_status=1
-fi
-
-
-# Clean up
-echo "Cleaning up..."
-rm "$MAZE_FILE"
-
-# At the end of the script, check if any test failed
-if [ $test_status -ne 0 ]; then
-    echo "Some tests failed."
-else
-    echo "All tests completed successfully."
-fi
+echo "All tests completed."
