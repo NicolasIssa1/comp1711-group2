@@ -227,6 +227,38 @@ else
     test_status=1
 fi
 
+#Test 12: System error handling test
+echo "Running Test 12: System Error Handling test..."
+#this test is to attempt to run the program with a non-existent maze file
+output=$(./maze non_existent_maze.txt 2>&1)
+if echo "$output" | grep -q "Error opening maze file" ; then
+    echo "Test 12 (System Error handling test): Passed"
+else
+    echo "Test 12 (System Error handling test): Failed"
+    test_status =1
+fi
+
+#Test 13: Bad User input test
+echo "Running test 13: Bad User input test..."
+#this test is to simulate invalid movement command
+output =$(echo "Z" | ./maze valid_maze.txt 2>&1)
+if echo "output" | grep -q "Invalid command" ;then
+    echo "Test 13 (Bad User Input Test): Passed"
+else
+    echo "Test 13 (Bad User Input Test) : Failed"
+    test_status=1
+fi
+
+#Test 14: Attempt to move through the walls test
+echo "Running Test 14: Attempt to move through wall test..."
+#Here we assume "W" command moves the player up into a wall in the maze
+output =$(echo "W | ./maze valid_maze_with_wall_at_top.txt 2>&1)
+if echo "$output" | grep -q "Cannot move through walls"; then
+    echo "Test 14 (Attempt to Move Through Wall Test): Passed"
+else
+    echo "Test 14 (Attempt to Move Through Wall Test): Failed"
+    test_status=1
+fi
 
 # Clean up
 echo "Cleaning up..."
