@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# Define the maze executable and file names
+# Define the maze executable and file names for each test
 EXECUTABLE="./maze"
-MAZE_FILE="maze.tsv"
+MAZE_FILE="simple_maze.txt"
+SIMPLE_MAZE_FILE="simple_maze.txt"
+NO_END_MAZE_FILE="no_end_maze.txt"
 
 # Compiling the maze program
 #This test checks if the maze program compiles without errors
@@ -36,13 +38,13 @@ else
     echo "Test 2 (Maze File Creation Test): Passed"
 fi
 
-# Test 3: Validate the contents of the maze
+# Test 3: Validate the contents of the maze (main maze file)
 # Check for the correct number of 'S' and 'E'
 start_count=$(grep -o "S" "$MAZE_FILE" | wc -l)
 end_count=$(grep -o "E" "$MAZE_FILE" | wc -l)
 
 #Test 3.1 : Start point test
-# This test checks if the maze file contains exactly one start point "S"
+# This test checks if the main maze file contains exactly one start point "S"
 if [ "$start_count" -ne 1 ]; then
     echo "Test 3.1 (Start Point Test): Invalid number of start points"
     test_status=1
@@ -115,7 +117,7 @@ else
     echo "Test 4.3 (Boundary Walls Test): Passed"
 fi
 
-echo "Test 4 (Maze Boundaries Test): All boundary tests passed."
+echo "Test 4 toal (Maze Boundaries Test): All boundary tests passed."
 
 
 # Test 5: Game logic test:
@@ -270,6 +272,7 @@ else
     echo "Test 15 (Valid Maze Navigation Test): Failed"
     test_status=1
 fi
+
 
 # Clean up
 echo "Cleaning up..."

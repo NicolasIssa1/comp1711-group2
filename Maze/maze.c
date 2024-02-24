@@ -60,32 +60,15 @@ void movePlayer(char maze[ROWS][COLS], int *playerRow, int *playerCol, char dire
  * @param endCol The ending column for the path.
  */
 
-void carvePath(char maze[ROWS][COLS], int startRow, int startCol, int endRow, int endCol);
-//Ensuring thart the path is continious and does not create shortcuts or remove walls that are part of the maze's challenge.
-
-//Function to initlaize the maze with walls and empty spaceds
-void initalizeMaze(char maze[ROWS][COLS]);
-
-//Function to print the current state of the maze
-void printMaze(char maze[ROWS][COLS], Player player);
-
-//Function to update the player's position based on the input command
-void movePlayer(char maze[ROWS][COLS], Player *player, char direction);
-
 //Main function where the porgram is actually executed.
 int main() {
     // Start with initialization code and game setup here
     char maze[ROWS][COLS];
     //Start position and symbol
-    Player player = {0, 0, 'S'};
-
-    //Then initialize the maze with walls and empty spaces
-    initalizeMaze(maze);
-    
 
     // The main game loop where player input and game logic are handled here
-    while(1){
-        printMaze(maze, player);
+    //while(1){
+
         //Then get the user input for direction to move the player
 
         //Move player based on input
@@ -95,7 +78,7 @@ int main() {
         //Check for game over condition
 
         //If the game is over, break out of the loop
-    }
+    //}
 
     //Game is over, so print results
 
