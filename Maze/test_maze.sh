@@ -200,7 +200,7 @@ fi
 # Test 20: Player Move Up Test
 echo -n "Test 20: Player Move Up Test - "
 $EXECUTABLE valid_maze.txt < move_up_input.txt  > "$TMP_FILE" 2>&1
-if echo "$output" | grep -q "Moved up"; then
+if grep -q "Player Moved up" "$TMP_FILE"; then
     echo "Test 20: PASS"
 else
     echo "Test 20: FAIL"
@@ -209,7 +209,7 @@ fi
 # Test 21: Player Move Down Test
 echo -n "Test 21: Player Move Down Test - "
 $EXECUTABLE valid_maze.txt < move_down_input.txt  > "$TMP_FILE" 2>&1
-if echo "$output" | grep -q "Moved down"; then
+if grep -q "Player Moved down" "$TMP_FILE"; then
     echo "Test 21: PASS"
 else
     echo "Test 21: FAIL"
@@ -264,6 +264,24 @@ if grep -q "Width is not within range" "$TMP_FILE"; then
     echo "Test 26: PASS"
 else
     echo "Test 26: FAIL"
+fi
+
+# Test 27: Player Move Left Test
+echo -n "Test 27: Player Move Left Test - "
+$EXECUTABLE valid_maze.txt < move_left_input.txt  > "$TMP_FILE" 2>&1
+if grep -q "Player Moved left" "$TMP_FILE"; then
+    echo "Test 27: PASS"
+else
+    echo "Test 27: FAIL"
+fi
+
+# Test 28: Player Move Right Test
+echo -n "Test 28: Player Move Right Test - "
+$EXECUTABLE valid_maze.txt < move_right_input.txt  > "$TMP_FILE" 2>&1
+if grep -q "Player Moved right" "$TMP_FILE"; then
+    echo "Test 28: PASS"
+else
+    echo "Test 28: FAIL"
 fi
 
 
