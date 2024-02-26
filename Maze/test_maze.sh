@@ -15,7 +15,7 @@ echo -e "\n\n~~ Maze Tests ~~"
 
 # Test 1:  for simple maze
 echo -n "Test 1: Testing simple maze - "
-$EXECUTABLE simple_maze.txt < simple_path_input.txt > "$TMP_FILE" 2>&1
+$EXECUTABLE valid_maze_maze.txt < valid_path_input.txt > "$TMP_FILE" 2>&1
 # Assuming "Player reached the end" indicates a successful navigation
 if grep -q "Player reached the end" "$TMP_FILE"; then
     echo "Test 1 :PASS"
@@ -245,6 +245,29 @@ if grep -q "Error: Cannot open file" "$TMP_FILE"; then
 else
     echo "Test 24: FAIL"
 fi
+
+# Test 25: Range length Test
+echo -n "Test 25: Range length Test - "
+# Test the range of the length
+$EXECUTABLE valid_maze.txt < Range_input.txt > "$TMP_FILE" 2>&1
+if grep -q "Length is not within range" "$TMP_FILE"; then
+    echo "Test 25: PASS"
+else
+    echo "Test 25: FAIL"
+fi
+
+# Test 26: Range width Test
+echo -n "Test 26: Range width Test - "
+# Test the range of the length
+$EXECUTABLE valid_maze.txt < Range_input.txt > "$TMP_FILE" 2>&1
+if grep -q "Width is not within range" "$TMP_FILE"; then
+    echo "Test 26: PASS"
+else
+    echo "Test 26: FAIL"
+fi
+
+
+
 
 # Cleaning up the temporary file
 rm -f "$TMP_FILE"
