@@ -63,26 +63,29 @@ void movePlayer(char maze[ROWS][COLS], int *playerRow, int *playerCol, char dire
 //Main function where the porgram is actually executed.
 int main() {
     // Start with initialization code and game setup here
+    // Define and initialize the maze array with predefined values or load from a file 
     char maze[ROWS][COLS];
-    //Start position and symbol
+    //Define and initalize player, including start position and symbol
 
     // The main game loop where player input and game logic are handled here
-    //while(1){
+    //while(game is running){
+
+        //Print the current state of the maze and player position
 
         //Then get the user input for direction to move the player
 
-        //Move player based on input
+        //Move player based on input and update the maze if needed
 
-        //Check for the win condition
+        //Check for the win condition (e.g, if the player reached the end)
 
-        //Check for game over condition
+        //Check for game over condition (e.g, if the moves exceed a certain number)
 
         //If the game is over, break out of the loop
     //}
 
-    //Game is over, so print results
+    //Game is over, so print final game results (win/lose)
 
-    // Finally, the code for writing the final state of the maze to a file
+    // Finally, the code for writing the final state of the maze to a file (3.g, a file for record-keeping)
 
     return 0;
 }

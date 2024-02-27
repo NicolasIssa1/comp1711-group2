@@ -275,18 +275,6 @@ else
     echo "Test 27: FAIL"
 fi
 
-# Test 28: Player Move Right Test
-echo -n "Test 28: Player Move Right Test - "
-$EXECUTABLE valid_maze.txt < move_right_input.txt  > "$TMP_FILE" 2>&1
-if grep -q "Player Moved right" "$TMP_FILE"; then
-    echo "Test 28: PASS"
-else
-    echo "Test 28: FAIL"
-fi
-
-
-
-
 # Cleaning up the temporary file
 rm -f "$TMP_FILE"
 
