@@ -8,7 +8,7 @@
 #define COLS 13
 
 //Defining a struct for the player. 
-typedef struct{
+typedef struct Player{
     int row;
     int col;
     //"S" for Start, "E" for end and "X" for the player
@@ -25,7 +25,7 @@ Player;
  * @return Non-zero if within bounds, zero otherwise.
  */
 
-int is_within_bounds(int x, int y);
+int is_within_bounds(int x, int y){
 
 /**
  * Prints the maze to the console with the player's current position indicated.
@@ -34,8 +34,9 @@ int is_within_bounds(int x, int y);
  * @param playerRow is the current row of the player.
  * @param playerCol is the current column of the player.
  */
+}
 
-void printMaze(char maze[ROWS][COLS], int playerRow, int playerCol);
+void printMaze(char maze[ROWS][COLS], int playerRow, int playerCol){
 
 /**
  * Moves the player in the maze according to the given direction.
@@ -46,8 +47,9 @@ void printMaze(char maze[ROWS][COLS], int playerRow, int playerCol);
  * @param playerCol A pointer to the player's current column.
  * @param direction The direction in which to move the player.
  */
+}
 
-void movePlayer(char maze[ROWS][COLS], int *playerRow, int *playerCol, char direction);
+void movePlayer(char maze[ROWS][COLS], int *playerRow, int *playerCol, char direction){
 
 /**
  *Carves a path ( one path) in the maze from start to end position.
@@ -59,6 +61,7 @@ void movePlayer(char maze[ROWS][COLS], int *playerRow, int *playerCol, char dire
  * @param endRow The ending row for the path.
  * @param endCol The ending column for the path.
  */
+}
 
 //Main function where the porgram is actually executed.
 int main() {

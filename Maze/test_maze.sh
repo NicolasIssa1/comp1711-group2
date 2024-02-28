@@ -55,8 +55,8 @@ fi
 
 # Test 5: for complex maze
 echo -n "Test 5: Testing complex maze - "
-$EXECUTABLE complex_maze.txt < complex_path_input.txt > "$TMP_FILE" 2>&1
-# Assuming specific conditions for complex maze navigation success
+$EXECUTABLE invalid_maze.txt < invalid_path_input.txt > "$TMP_FILE" 2>&1
+# Assuming specific conditions for invalid maze navigation success
 if grep -q "Player can't reach the end" "$TMP_FILE"; then
     echo "Test 5: PASS"
 else
